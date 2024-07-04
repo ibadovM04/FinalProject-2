@@ -1,0 +1,16 @@
+﻿@model List<CategoryDto>
+<nav class="site-navigation text-right text-md-center" role="navigation">
+    <div class="container">
+        <ul class="site-menu js-clone-nav d-none d-md-block">
+            
+            @foreach (var category in Model)
+            {
+                <li>
+                    <a href="@Url.Action("List","Product", new{categoryId=category.CategoryId})">@category.Name</a>
+                </li>
+            }
+            
+            
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,150 @@
+﻿@model ProductDetailVm
+
+    <section class="single-product">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <ol class="breadcrumb">
+                        <li><a href="@Url.Action("Index","Home")">Home</a></li>
+                        <li><a href="@Url.Action("List", "Product")">Shop</a></li>
+                        <li class="active">Single Product</li>
+                    </ol>
+                </div>
+                <div class="col-md-6">
+                    <ol class="product-pagination text-right">
+                        <li><a href="blog-left-sidebar.html"><i class="tf-ion-ios-arrow-left"></i> Next </a></li>
+                        <li><a href="blog-left-sidebar.html">Preview <i class="tf-ion-ios-arrow-right"></i></a></li>
+                    </ol>
+                </div>
+            </div>
+            <div class="row mt-20">
+                <div class="col-md-5">
+                    <div class="single-product-slider">
+                        <div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+                            <div class='carousel-outer'>
+                                <!-- me art lab slider -->
+                                <div class='carousel-inner '>
+                                    @if (Model.Product.ImageURL is not null)
+                                    {
+                                        <div class='item active'>
+                                            <img src='@Model.Product.ImageURL' alt='' data-zoom-image="@Model.Product.ImageURL" />
+                                        </div>
+                                    }
+
+                                    @foreach (var otherImage in Model.Product?.OtherImages)
+                                    {
+                                        <div class='item'>
+                                            <img src='@otherImage' alt='' data-zoom-image="@otherImage" />
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- sag sol -->
+                                <a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
+                                    <i class="tf-ion-ios-arrow-left"></i>
+                                </a>
+                                <a class='right carousel-control' href='#carousel-custom' data-slide='next'>
+                                    <i class="tf-ion-ios-arrow-right"></i>
+                                </a>
+                            </div>
+
+                            <!-- thumb -->
+                            <ol class='carousel-indicators mCustomScrollbar meartlab'>
+                                @{
+                                    var counter = 0;
+                                }
+                                @if (Model.Product.ImageURL is not null)
+                                {
+                                    <li data-target='#carousel-custom' data-slide-to='@counter' class='active'>
+                                        <img src='@Model.Product.ImageURL' alt='' />
+                                    </li>
+
+                                    counter++;
+                                }
+
+
+                                @foreach (var otherImage in Model.Product.OtherImages)
+                                {
+                                    <li data-target='#carousel-custom' data-slide-to='@counter'>
+                                        <img src='@otherImage' alt='' />
+                                    </li>
+
+                                    counter++;
+                                }
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="single-product-details">
+                        <h2>@Model.Product.Name</h2>
+                        @if (Model.Product.Discount != null)
+                        {
+                            <p class="price"><s> @Model.Product.Price AZN</s> @Model.Product.DiscountedPrice AZN</p>
+                        }
+                        else
+                        {
+                            <p class="price">@Model.Product.Price AZN</p>
+                        }
+
+                        <p class="product-description mt-20">
+                            @Model.Product.Description
+                        </p>
+                        <ul>
+                            @foreach (var item in Model.Product.Specifications)
+                            {
+                                <li>@item.Name : @item.Value</li>
+                            }
+                        </ul>
+                        @*   <div class="color-swatches">
+                    <span>color:</span>
+                    <ul>
+                    <li>
+                    <a href="#!" class="swatch-violet"></a>
+                    </li>
+                    <li>
+                    <a href="#!" class="swatch-black"></a>
+                    </li>
+                    <li>
+                    <a href="#!" class="swatch-cream"></a>
+                    </li>
+                    </ul>
+                    </div> *@
+                        @*  <div class="product-size">
+                    <span>Size:</span>
+                    <select class="form-control">
+                    <option>S</option>
+                    <option>M</option>
+                    <option>L</option>
+                    <option>XL</option>
+                    </select>
+                    </div> *@
+                        <div class="product-quantity">
+                            <span>Quantity:</span>
+                            <div class="product-quantity-slider">
+                                <input id="product-quantity" type="text" value="@Model.Product.Quantity" name="product-quantity">
+                            </div>
+                        </div>
+                        <div class="product-category">
+                            <span>Category:</span>
+                            <ul>
+                                <li><a href="@Url.Action("List","Product", new {categoryId = Model.Product.CategoryId})">@Model.Product.CategoryName</a></li>
+                            </ul>
+                        </div>
+                        @if (Context.User.Identity.IsAuthenticated)
+                        {
+                        <a asp-action="AddToCart" asp-controller="Product" asp-route-productid="@Model.Product.ProductId" class="btn btn-main mt-20">Add To Cart</a>
+
+                    }
+                    @*  else
+                    {
+                    <a href="cart.html" class="btn btn-main mt-20">Add To Cart</a>
+                    } *@
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+   
+    </section>

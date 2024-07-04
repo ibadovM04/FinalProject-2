@@ -1,0 +1,35 @@
+﻿@model EmailModel
+@{
+    ViewData["Title"] = "Send Email";
+}
+
+
+    <div class="container mt-5">
+        <h2>Send Email</h2>
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-info">@ViewBag.Message</div>
+        }
+        <form asp-action="SendEmail" method="post">
+            <div class="form-group">
+                <label for="SenderEmail">Sender Email</label>
+                <input type="email" class="form-control" id="SenderEmail" name="SenderEmail" asp-for="SenderEmail" required />
+            </div>
+            <div class="form-group">
+                <label for="ReceiverEmail">Receiver Email</label>
+                <input type="email" class="form-control" id="ReceiverEmail" name="ReceiverEmail" asp-for="ReceiverEmail" required />
+            </div>
+            <div class="form-group">
+                <label for="Subject">Subject</label>
+                <input type="text" class="form-control" id="Subject" name="Subject" asp-for="Subject" required />
+            </div>
+            <div class="form-group">
+                <label for="Body">Body</label>
+                <textarea class="form-control" id="Body" name="Body" rows="5" asp-for="Body" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Email</button>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

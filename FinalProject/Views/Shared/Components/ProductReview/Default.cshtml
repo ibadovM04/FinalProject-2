@@ -1,0 +1,35 @@
+﻿@*  ﻿ @model List<ProductReviewDto>
+<div id="reviews" class="tab-pane fade">
+	<div class="post-comments">
+		<ul class="media-list comments-list m-bot-50 clearlist">
+			@foreach(var productReview in Model)
+			{
+				<li class="media">
+
+					<a class="pull-left" href="#!">
+						<img class="media-object comment-avatar" src="images/blog/avater-1.jpg" alt="" width="50" height="50" />
+					</a>
+					<div class="media-body">
+						<div class="comment-info">
+							<h4 class="comment-author">
+								<a href="#!">@productReview.</a>
+
+							</h4>
+							<time datetime="2013-04-06T13:53">July 02, 2015, at 11:34</time>
+							<a class="comment-button" href="#!"><i class="tf-ion-chatbubbles"></i>Reply</a>
+						</div>
+
+						<p>
+							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at magna ut ante eleifend eleifend.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod laborum minima, reprehenderit laboriosam officiis praesentium? Impedit minus provident assumenda quae.
+						</p>
+					</div>
+
+				</li>
+			}
+			<!-- Comment Item start-->
+			
+			<!-- End Comment Item -->
+			
+		</ul>
+	</div>
+</div>  *@

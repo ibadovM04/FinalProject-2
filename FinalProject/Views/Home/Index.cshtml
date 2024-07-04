@@ -1,0 +1,73 @@
+﻿@model HomeIndexVm
+
+<header class="site-navbar" role="banner">
+      <div class="site-navbar-top">
+        <div class="container">
+          <div class="row align-items-center">
+
+             <div class="col-6 col-md-4 order-2 order-md-1 site-search-icon text-left">
+               @* <form action="" class="site-block-top-search">
+                <span class="icon icon-search2"></span>
+                <input type="text" class="form-control border-0" placeholder="Search">
+              </form>  *@
+            </div> 
+
+            <div class="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
+              <div class="site-logo">
+                <a href="@Url.Action("Index","Home")" class="js-logo-clone">Xırdalan Mall</a>
+              </div>
+            </div>
+
+            <div class="col-6 col-md-4 order-3 order-md-3 text-right">
+              <div class="site-top-icons">
+                <ul>
+                  <li><a href="#"><span class="icon icon-person"></span></a></li>
+                  <li>
+
+                                @if (Context.User.Identity.IsAuthenticated)
+                                {
+                                    <a href="#">@Context.User.Claims.Where(c => c.Type == "Name").FirstOrDefault()?.Value</a> <a href="#">@Context.User.Claims.Where(c => c.Type == "Surname").FirstOrDefault()?.Value</a>
+                                    <span>/</span>    <a href="@Url.Action("Logout","Account")">SignOut</a>
+                                }
+                                else 
+                                {
+                                    <a href="@Url.Action("Login","Account")">Login</a> <span>/</span>  <a href="@Url.Action("Register","Account")"> Register </a>
+                                }
+
+                                
+
+                  </li>
+                  <li>
+                             
+                  </li> 
+                  <li class="d-inline-block d-md-none ml-md-0"><a href="#" class="site-menu-toggle js-menu-toggle"><span class="icon-menu"></span></a></li>
+                </ul>
+              </div> 
+            </div>
+
+          </div>
+        </div>
+      </div> 
+    @await Component.InvokeAsync("Navigation")
+    </header>
+
+ @await Component.InvokeAsync("Slider")
+ 
+    <div class="site-section site-section-sm site-blocks-1">
+      <div class="container">
+        <div class="row">
+            @await Component.InvokeAsync("HomeFag")
+            @await Component.InvokeAsync("HomeAbout")
+            @await Component.InvokeAsync("HomeSupport")
+        </div>
+      </div>
+    </div>
+
+ @await Component.InvokeAsync("HomeCategory")
+
+
+   @await Component.InvokeAsync("FeaturedProduct")
+
+@await Component.InvokeAsync("BigSaleProduct")
+  
+   

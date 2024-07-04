@@ -1,0 +1,16 @@
+﻿@model List<HomeAboutDto>
+
+<div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="100">
+    @foreach (var about in Model)
+    {
+        <div class="icon mr-4 align-self-start">
+            <span class="icon-refresh2"></span>
+        </div>
+        <div class="text">
+            <a href="@Url.Action("Index","TeamAbout")" class="text-uppercase">@about.Title</a>
+            <p>@about.Description</p>
+        </div>
+
+    }
+    
+</div>

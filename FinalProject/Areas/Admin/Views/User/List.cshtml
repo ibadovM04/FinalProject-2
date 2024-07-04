@@ -1,0 +1,242 @@
+﻿
+@model UserListVm
+
+<div id="tableDropdown">
+    <div class="widget-header">
+        <div class="row">
+            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                <h4>İstifadəçilər</h4>
+            </div>
+        </div>
+    </div>
+    <div class="widget-content widget-content-area">
+
+        <div id="filter-wrapper">
+            <input type="text" class="form-control" id="name" placeholder="Ad" aria-label="name">
+            <input type="text" class="form-control" id="surname" placeholder="Soyad" aria-label="surname">
+            <input type="text" class="form-control" id="email" placeholder="E-poçt" aria-label="email">
+        </div>
+        <div id="table-area">
+            @await Html.PartialAsync("_UserListPartialView", Model)
+        </div>
+    </div>
+</div>
+
+
+@section CSS {
+    <link href="~/admin/assets/css/elements/custom-pagination.css" rel="stylesheet" type="text/css" />
+    <style>
+       #filter-wrapper{
+           display:flex;
+           gap:20px;
+           padding:15px 0px;
+       }
+       .user-status{
+           cursor:pointer;
+       }
+    </style>
+    <link href="~/admin/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link href="~/admin/plugins/animate/animate.css" rel="stylesheet" type="text/css" />
+    <script src="~/admin/plugins/sweetalerts/promise-polyfill.js"></script>
+    <link href="~/admin/plugins/sweetalerts/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/admin/plugins/sweetalerts/sweetalert.css" rel="stylesheet" type="text/css" />
+    <link href="~/admin/assets/css/components/custom-sweetalert.css" rel="stylesheet" type="text/css" />
+}
+
+@section SCRIPTS {
+    <script src="~/admin/plugins/sweetalerts/sweetalert2.min.js"></script>
+    <script src="~/admin/plugins/sweetalerts/custom-sweetalert.js"></script>
+    <script src="~/admin/assets/js/scrollspyNav.js"></script>
+    <script src="~/admin/assets/js/userFilter.js"></script>
+    @* <script src="~/admin/assets/js/userDelete.js"></script> *@
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            FilterByPagination();
+
+            const nameFilter = document.getElementById("name");
+            const surnameFilter = document.getElementById("surname");
+            const emailFilter = document.getElementById("email");
+
+            nameFilter.addEventListener("keyup", function () {
+
+                Filter((res) => {
+                    const result = JSON.parse(res.responseText);
+                    document.querySelector("#table-area").innerHTML = result.data;
+                    FilterByPagination();
+                    ChangeUserStatus((res, userStatus, changeStatusId) => {
+
+                        res = JSON.parse(res.responseText);
+
+                        if (res.status == 400) {
+                            swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: `${res.error}`
+                            });
+                            return;
+                        }
+                        else {
+
+                            if (changeStatusId == @((byte)UserStatusEnum.Active)) {
+                                userStatus.classList.remove("badge-danger")
+                                userStatus.classList.add("badge-success")
+                                userStatus.innerText = "Aktiv"
+                                userStatus.setAttribute("data-change-id", @((byte)UserStatusEnum.Deactive))
+                            }
+                            else {
+                                userStatus.classList.remove("badge-success")
+                                userStatus.classList.add("badge-danger")
+                                userStatus.innerText = "Deaktiv"
+                                userStatus.setAttribute("data-change-id", @((byte)UserStatusEnum.Active))
+                            }
+
+
+                            swal(
+                                'Uğurlu əməliyyat!',
+                                'Dəyişikliklər yadda saxlanıldı.',
+                                'success'
+                            );
+                            return;
+                        }
+                    })
+                });
+
+            })
+
+            surnameFilter.addEventListener("keyup", function () {
+
+                Filter((res) => {
+                    const result = JSON.parse(res.responseText);
+                    document.querySelector("#table-area").innerHTML = result.data;
+                    FilterByPagination();
+                    ChangeUserStatus((res, userStatus, changeStatusId) => {
+
+                        res = JSON.parse(res.responseText);
+
+                        if (res.status == 400) {
+                            swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: `${res.error}`
+                            });
+                            return;
+                        }
+                        else {
+
+                            if (changeStatusId == @((byte)UserStatusEnum.Active)) {
+                                userStatus.classList.remove("badge-danger")
+                                userStatus.classList.add("badge-success")
+                                userStatus.innerText = "Aktiv"
+                                userStatus.setAttribute("data-change-id", @((byte)UserStatusEnum.Deactive))
+                            }
+                            else {
+                                userStatus.classList.remove("badge-success")
+                                userStatus.classList.add("badge-danger")
+                                userStatus.innerText = "Deaktiv"
+                                userStatus.setAttribute("data-change-id", @((byte)UserStatusEnum.Active))
+                            }
+
+
+                            swal(
+                                'Uğurlu əməliyyat!',
+                                'Dəyişikliklər yadda saxlanıldı.',
+                                'success'
+                            );
+                            return;
+                        }
+                    })
+                });
+
+            })
+
+            emailFilter.addEventListener("keyup", function () {
+
+                Filter((res) => {
+                    const result = JSON.parse(res.responseText);
+                    document.querySelector("#table-area").innerHTML = result.data;
+                    FilterByPagination();
+                    ChangeUserStatus((res, userStatus, changeStatusId) => {
+
+                        res = JSON.parse(res.responseText);
+
+                        if (res.status == 400) {
+                            swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: `${res.error}`
+                            });
+                            return;
+                        }
+                        else {
+
+                            if (changeStatusId == @((byte)UserStatusEnum.Active)) {
+                                userStatus.classList.remove("badge-danger")
+                                userStatus.classList.add("badge-success")
+                                userStatus.innerText = "Aktiv"
+                                userStatus.setAttribute("data-change-id", @((byte)UserStatusEnum.Deactive))
+                            }
+                            else {
+                                userStatus.classList.remove("badge-success")
+                                userStatus.classList.add("badge-danger")
+                                userStatus.innerText = "Deaktiv"
+                                userStatus.setAttribute("data-change-id", @((byte)UserStatusEnum.Active))
+                            }
+
+
+                            swal(
+                                'Uğurlu əməliyyat!',
+                                'Dəyişikliklər yadda saxlanıldı.',
+                                'success'
+                            );
+                            return;
+                        }
+                    })
+                });
+
+            });
+
+            ChangeUserStatus((res, userStatus, changeStatusId) => {
+
+                res = JSON.parse(res.responseText);
+
+                if (res.status == 400) {
+                    swal({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: `${res.error}`
+                    });
+                    return;
+                }
+                else {
+
+                    if (changeStatusId == @((byte)UserStatusEnum.Active)) {
+                        userStatus.classList.remove("badge-danger")
+                        userStatus.classList.add("badge-success")
+                        userStatus.innerText = "Aktiv"
+                        userStatus.setAttribute("data-change-id", @((byte)UserStatusEnum.Deactive))
+                    }
+                    else {
+                        userStatus.classList.remove("badge-success")
+                        userStatus.classList.add("badge-danger")
+                        userStatus.innerText = "Deaktiv"
+                        userStatus.setAttribute("data-change-id", @((byte)UserStatusEnum.Active))
+                    }
+
+
+                    swal(
+                        'Uğurlu əməliyyat!',
+                        'Dəyişikliklər yadda saxlanıldı.',
+                        'success'
+                    );
+                    return;
+                }
+            })
+
+
+        })
+
+
+
+    </script>
+}

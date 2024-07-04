@@ -1,0 +1,17 @@
+﻿
+@model List<SupportDto>
+
+
+<div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="200">
+    @foreach (var support in Model)
+    {
+        <div class="icon mr-4 align-self-start">
+            <span class="icon-help"></span>
+        </div>
+        <div class="text">
+            <a href="@Url.Action("Index","Contact")" class="text-uppercase">@support.Title</a>
+            <p>@support.Description</p>
+        </div>
+    }
+   
+</div>

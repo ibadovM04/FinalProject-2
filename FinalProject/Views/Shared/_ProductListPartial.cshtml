@@ -1,0 +1,47 @@
+﻿@model ProductListVm
+
+
+    @foreach (var product in Model.Products)
+    {
+        <div class="col-sm-6 col-lg-4 mb-4" data-aos="fade-up">
+            <div class="block-4 text-center border">
+                
+                    <!-- Your initial items here -->
+               
+
+
+                 
+                   
+                    
+                    <!-- More items will be added here -->
+               
+                <figure class="block-4-image">
+                    <a asp-action="Detail" asp-controller="Product" asp-route-productid="@product.ProductId" ><img src="@product.ImageURL" alt="Image placeholder" class="img-fluid"></a>
+                </figure>
+                <div class="block-4-text p-4">
+                <h3><a asp-action="ReviewDetail" asp-controller="Product" asp-route-productid="@product.ProductId">@product.Name</a></h3>
+                    <p class="mb-0">@product.Description</p>
+
+                    @if (product.Discount != null)
+                    {
+                        <p class="text-primary font-weight-bold"><s>@product.Price AZN</s></p>
+                        <p class="text-primary font-weight-bold">@product.DiscountedPrice AZN</p>
+                    }
+                    else
+                    {
+                        <p class="text-primary font-weight-bold">@product.Price</p>
+                    }
+
+                </div>
+                    </div>
+               
+                
+               
+            
+        </div>
+
+    }
+  
+ 
+
+

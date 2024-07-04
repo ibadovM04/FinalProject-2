@@ -1,0 +1,276 @@
+﻿@model ProductAddVm
+<form method="post" action="@Url.Action("Add","Product")" enctype="multipart/form-data">
+    <div class="form-row mb-4">
+        <div class="form-group col-md-6">
+            <label for="name">Ad</label>
+            <input name="ProductPost.Name" type="text" class="form-control" id="name" placeholder="Ad">
+            @Html.ValidationMessageFor(c => c.ProductPost.Name)
+        </div>
+        <div class="form-group col-md-6">
+            <label for="barcode">Barkod</label>
+            <input name="ProductPost.Barcode" type="text" class="form-control" id="barcode" placeholder="Barkod">
+            @Html.ValidationMessageFor(c => c.ProductPost.Barcode)
+        </div>
+    </div>
+    <div class="form-row mb-4">
+        <div class="form-group col-md-6">
+            <label for="categories">Kateqoriya</label>
+            <select name="ProductPost.CategoryId" id="categories" class="form-control">
+                <option selected>Seç...</option>
+                @foreach (var category in Model?.ProductGet?.Categories)
+                {
+                    <option value="@category.CategoryId">@category.Name</option>
+                }
+                @* TODO: add Category recursive*@
+
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="genderTypes">Cinsiyyət</label>
+            <select name="ProductPost.GenderTypeId" id="genderTypes" class="form-control">
+                <option selected>Seç...</option>
+                @foreach (var gender in Model?.ProductGet?.Genders)
+                {
+                    <option value="@gender.GenderTypeId">@gender.GenderName</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-row other-specs">
+    </div>
+    <div class="form-row mb-4">
+        <div style="width:100%" class="form-group mb-4">
+            <label for="description">Təsvir</label>
+            <textarea name="ProductPost.Description" rows="10" class="form-control" id="description" placeholder="Təsvir"></textarea>
+        </div>
+    </div>
+    <div class="form-row mb-4">
+        <div class="form-group col-md-3">
+            <label for="sellAmount">Satış qiyməti</label>
+            <input name="ProductPost.SellAmount" type="text" class="form-control" id="sellAmount" placeholder="Satış qiyməti">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="buyAmount">Alış qiyməti</label>
+            <input name="ProductPost.BuyAmount" type="text" class="form-control" id="buyAmount" placeholder="Alış qiyməti">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="buyLimit">Alış limiti</label>
+            <input name="ProductPost.BuyLimit" type="text" class="form-control" id="buyLimit" placeholder="Alış limiti">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="quantity">Stok sayı</label>
+            <input name="ProductPost.Quantity" type="text" class="form-control" id="quantity" placeholder="Stok sayı">
+        </div>
+    </div>
+    <div class="form-row mb-4">
+        <div style="display:flex;gap:10px;" class="form-group col-md-3">
+            Stokda varmı?
+            <label class="switch s-icons s-outline  s-outline-primary  mb-4 mr-2">
+                <input name="ProductPost.InStock" id="inStock" type="checkbox" checked="">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div style="display:flex;gap:10px;" class="form-group col-md-3">
+            Çatdırılma varmı?
+            <label class="switch s-icons s-outline  s-outline-primary  mb-4 mr-2">
+                <input name="ProductPost.HasShipping" id="hasShipping" type="checkbox" checked="">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <div class="form-group col-md-3">
+            <label for="showQuantity">Saytda görünən stok sayı</label>
+            <input name="ProductPost.ShowQuantity" type="text" class="form-control" id="showQuantity" placeholder="Saytda görünən stok sayı">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="discount">Endirim %</label>
+            <input name="ProductPost.Discount" type="text" class="form-control" id="discount" placeholder="Endirim">
+        </div>
+    </div>
+    <div class="form-row mb-4">
+        <div class="form-group col-md-3">
+            <label for="mainImage">Əsas şəkil</label>
+            <input name="ProductPost.MainImage" type="file" class="form-control" id="mainImage">
+        </div>
+        <div class="form-group col-md-3">
+            <label for="otherImages">Digər şəkillər</label>
+            <input name="ProductPost.OtherImages" multiple type="file" class="form-control" id="otherImages">
+        </div>
+    </div>
+    <button type="button" id="save-product" class="btn btn-primary mt-3">Yadda Saxla</button>
+</form>
+
+@section CSS {
+    <link href="~/admin/assets/css/scrollspyNav.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="~/admin/assets/css/forms/switches.css">
+    <link href="~/admin/plugins/apex/apexcharts.css" rel="stylesheet" type="text/css">
+    <style>
+        .field-validation-error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+}
+
+@section SCRIPTS {
+    <script src="~/admin/plugins/apex/apexcharts.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+            const categories = document.getElementById("categories");
+
+            categories.addEventListener("change", function () {
+                let otherSpecsDiv = document.querySelector(".other-specs");
+
+                otherSpecsDiv.innerHTML = "";
+
+                let xhr = new XMLHttpRequest();
+
+                const categoryId = this.value;
+
+                xhr.open("GET", "https://localhost:7241/Admin/Specification/GetSpecificationsByCategoryId?categoryId=" + categoryId, true);
+
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        const result = JSON.parse(this.responseText);
+
+                        if (result.status == 400) {
+                            alert("Xeta bas verdi!");
+                            return;
+                        }
+
+
+                        otherSpecsDiv.classList.add("mb-4");
+
+                        for (let sp of result.data) {
+                            if (sp.options[0].name == sp.name) {
+                                let input = document.createElement("input");
+
+                                input.setAttribute("type", "text");
+                                input.setAttribute("data-optionId", sp.options[0].id);
+
+                                input.setAttribute("placeholder", sp.name);
+
+                                input.classList.add("form-control");
+                                input.classList.add("custom-spec");
+
+                                otherSpecsDiv.appendChild(input);
+                                return;
+                            }
+
+                            let labelforSelect = document.createElement("label");
+
+                            labelforSelect.innerText = sp.name;
+
+                            let select = document.createElement("select");
+
+                            select.classList.add("form-control");
+                            select.classList.add("custom-spec");
+
+                            otherSpecsDiv.appendChild(labelforSelect);
+
+                            let defaultOption = document.createElement("option");
+
+                            defaultOption.innerText = "--Seç--";
+
+                            select.appendChild(defaultOption);
+                            for(let op of sp.options){
+                                let optionElement = document.createElement("option");
+
+                                optionElement.value = op.specOptionId;
+
+                                optionElement.innerText = op.name;
+
+                                select.appendChild(optionElement);
+                            }
+
+                            otherSpecsDiv.appendChild(select);
+                        }
+                    }
+                }
+
+                xhr.send();
+
+            });
+
+
+            const saveProductBtn = document.getElementById("save-product");
+
+            saveProductBtn.addEventListener("click", function (e) {
+
+                let formData = new FormData();
+
+                formData.append("ProductPost.Name", document.getElementById("name").value);
+                formData.append("ProductPost.Barcode", document.getElementById("barcode").value);
+                formData.append("ProductPost.CategoryId", document.getElementById("categories").value);
+                formData.append("ProductPost.GenderTypeId", document.getElementById("genderTypes").value);
+                formData.append("ProductPost.Description", document.getElementById("description").value);
+                formData.append("ProductPost.SellAmount", document.getElementById("sellAmount").value);
+                formData.append("ProductPost.BuyAmount", document.getElementById("buyAmount").value);
+                formData.append("ProductPost.BuyLimit", document.getElementById("buyLimit").value);
+                formData.append("ProductPost.Quantity", document.getElementById("quantity").value);
+                formData.append("ProductPost.InStock", document.getElementById("inStock").value);
+                formData.append("ProductPost.HasShipping", document.getElementById("hasShipping").value);
+                formData.append("ProductPost.ShowQuantity", document.getElementById("showQuantity").value);
+                formData.append("ProductPost.Discount", document.getElementById("showQuantity").value);
+                formData.append("ProductPost.MainImage", document.getElementById("mainImage").files[0]);
+
+                let index = 0;
+                for (let f of document.getElementById("otherImages").files) {
+                    formData.append(`ProductPost.OtherImages[${index}]`, f);
+                    index++;
+                }
+
+                const specs = document.querySelectorAll(".custom-spec");
+
+                let specValues = [];
+
+                for(let sp of specs){
+
+                    if (sp.getAttribute("data-optionId") != undefined && sp.getAttribute("data-optionId") != null) {
+                        specValues.push({
+                            value : sp.value,
+                            optionId: sp.getAttribute("data-optionId")
+                        });
+                        continue;
+                    }
+
+                    const textOfOption = sp.querySelector(`option[value='${sp.value}']`).innerText;
+
+                    specValues.push({
+                        value: textOfOption,
+                        optionId: sp.value
+                    });
+
+                }
+
+                index = 0;
+                for(let sp of specValues){
+                    formData.append(`ProductPost.Specifications[${index}].Value`, sp.value);
+                    formData.append(`ProductPost.Specifications[${index}].OptionId`, sp.optionId);
+                }
+
+                let xhr = new XMLHttpRequest();
+
+                xhr.open("POST", "https://localhost:7241/Admin/Product/Add",true);
+
+                // xhr.setRequestHeader("content-type", "multipart/form-data");
+
+                xhr.send(formData);
+
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        const result = JSON.parse(this.responseText);
+
+                        if (result.status == 400) {
+                            alert("xeta bas verdi!");
+                            return;
+                        }
+
+                        alert("urraaaa!");
+                    }
+                }
+            })
+        })
+    </script>
+}

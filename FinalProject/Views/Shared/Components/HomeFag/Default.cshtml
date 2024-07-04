@@ -1,0 +1,15 @@
+﻿@model List<HomeFagDto>
+
+<div class="col-md-6 col-lg-4 d-lg-flex mb-4 mb-lg-0 pl-4" data-aos="fade-up" data-aos-delay="">
+    @foreach(var fag in Model)
+    {
+        <div class="icon mr-4 align-self-start">
+            <span class="icon-truck"></span>
+        </div>
+        <div class="text">
+            <a href="@Url.Action("Index","FAG")" class="text-uppercase">@fag.Title</a>
+            <p>@fag.Description</p>
+        </div>
+    }
+    
+</div>

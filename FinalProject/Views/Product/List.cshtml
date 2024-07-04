@@ -1,0 +1,167 @@
+﻿@model ProductListQueryModel
+<div class="bg-light py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 mb-0"><a href="@Url.Action("Index","Home")">Home</a> <span class="mx-2 mb-0">/</span> <strong class="text-black">Shop</strong></div>
+        </div>
+    </div>
+</div>
+<div class="site-navbar">
+
+    @await Component.InvokeAsync("Navigation")
+</div>
+<div class="site-section">
+    
+    <div class="container">
+      
+        <div class="row mb-5">
+           
+            <div class="col-md-9 order-2 product-list-wrapper">
+                <div class="row mb-5">
+                    <div class="row">
+                @await Component.InvokeAsync("ProductList", Model)
+                    </div>
+                </div>
+
+@* 
+                
+              
+
+                @await Component.InvokeAsync("HomeCategory") *@
+                <div class="load-more-wrapper">
+                    <a href="#" class="load-more">Load more</a>
+                </div>
+            </div>
+
+            <div class="col-md-3 order-1 mb-5 mb-md-0">
+                @await Component.InvokeAsync("ProductListCategory")
+            </div> 
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const searchParams = new URLSearchParams(window.location.search);
+
+            const defaultCategoryId = searchParams.get("categoryId");
+
+            if (defaultCategoryId != undefined && defaultCategoryId != null) {
+                const defaultSelectedCategory = document.querySelector(`a[data-categoryId="${defaultCategoryId}"]`)
+                if (defaultSelectedCategory != undefined && defaultCategoryId != null) {
+                    defaultSelectedCategory.classList.add("clicked-category");
+                }
+            }
+
+            let page = 1;
+
+            const loadMoreWrapper = document.querySelector(".load-more-wrapper");
+            const loadMoreBtn = document.querySelector(".load-more");
+
+            loadMoreBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                let xhr = new XMLHttpRequest();
+
+                page = page + 1; //page++
+
+                const clickedCategory = document.querySelector(".clicked-category");
+
+                let clickedCategoryId = 0;
+
+                if (clickedCategory != undefined) {
+                    clickedCategoryId = clickedCategory.getAttribute("data-categoryId");
+                }
+
+                let categoryQueryPath = "";
+
+                if (clickedCategoryId != 0) {
+                    categoryQueryPath += "&categoryId=" + clickedCategoryId;
+                }
+                else if (defaultCategoryId != null || defaultCategoryId != undefined) {
+                    categoryQueryPath += "&categoryId=" + defaultCategoryId;
+                }
+
+                xhr.open("GET", "https://localhost:7241/product/filter?page=" + page + categoryQueryPath, true);
+
+                xhr.send();
+
+                xhr.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        let result = JSON.parse(this.responseText);
+
+                        const productListRow = document.querySelector(".product-list-wrapper .row");
+
+                        const productList = document.querySelector(".product-list-wrapper");
+
+                        if (result.status == 200) {
+                            if (page == result.totalPage) {
+                                //TODO when category changed revert back load more
+                                loadMoreWrapper.style.display = "none";
+                            }
+
+                            productListRow.innerHTML += result.data;
+                        }
+                        else {
+                            alert("Xeta bas verdi!");
+                        }
+                    }
+                }
+
+            });
+
+
+            const categoryLinks = document.querySelectorAll(".panel-body a");
+
+            for (let categoryLink of categoryLinks) {
+                categoryLink.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    loadMoreWrapper.style.display = "block";
+
+                    page = 1;
+
+                    categoryLinks.forEach(c => c.classList.remove("clicked-category"));
+
+                    this.classList.add("clicked-category");
+
+                    //TODO can work for multiple category
+                    const clickedCategoryId = this.getAttribute("data-categoryId");
+
+                    searchParams.set("categoryId", clickedCategoryId);
+
+                    history.pushState(null, null, "?" + searchParams.toString());
+
+                    let xhr = new XMLHttpRequest();
+
+                    xhr.open("GET", "https://localhost:7241/product/filter?categoryId=" + clickedCategoryId, true);
+
+                    xhr.send();
+
+                    xhr.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            let result = JSON.parse(this.responseText);
+
+                            const productListRow = document.querySelector(".product-list-wrapper .row");
+                            productListRow.innerHTML = "";
+                            if (result.status == 200) {
+                                productListRow.innerHTML += result.data;
+                            }
+                            else {
+                                alert("Xeta bas verdi!");
+                            }
+                        }
+                    }
+                })
+            }
+            //todo state change olanda categoryId gotur ve sorgu at ona uygun
+        });
+    </script>
+} 

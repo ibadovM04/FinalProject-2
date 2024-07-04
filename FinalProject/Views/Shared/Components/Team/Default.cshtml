@@ -1,0 +1,35 @@
+﻿
+@model List<TeamDto>
+<div class="site-section border-bottom" data-aos="fade">
+    <div class="container">
+
+        
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-7 site-section-heading text-center pt-4">
+                    <h2>Team</h2>
+                </div>
+            </div>
+            <div class="row">
+            @foreach (var teams in Model)
+            {
+                <div class="col-md-6 col-lg-3">
+
+                    <div class="block-38 text-center">
+                        <div class="block-38-img">
+                            <div class="block-38-header">
+                                <img src="@teams.profileImageUrl" alt="Image placeholder" class="mb-4">
+                                <h3 class="block-38-heading h4">@teams.TeamMemberName</h3>
+                                <p class="block-38-subheading">@teams.TeamMemberPosition</p>
+                            </div>
+                            <div class="block-38-body">
+                                <p>@teams.TeamMemberDescription </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        
+        
+    </div>
+</div>
